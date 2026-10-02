@@ -7,29 +7,11 @@ final class LearningViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var isOffline = false
     @Published var errorMessage: String?
-    @Published var isAuthenticated = false
-    @Published var isLoggingIn = false
-    @Published var loginError: String?
 
     private let repository: CourseRepository
-    private let authenticationService: MockAuthenticationService
 
-    init(repository: CourseRepository? = nil, authenticationService: MockAuthenticationService? = nil) {
+    init(repository: CourseRepository? = nil) {
         self.repository = repository ?? CourseRepository()
-        self.authenticationService = authenticationService ?? MockAuthenticationService()
-    }
-
-    func login(email: String, password: String) async {
-        loginError = nil
-        isLoggingIn = true
-        defer { isLoggingIn = false }
-        do {
-            try await authenticationService.login(email: email, password: password)
-            isAuthenticated = true
-            await loadCourses()
-        } catch {
-            loginError = error.localizedDescription
-        }
     }
 
     func loadCourses() async {
